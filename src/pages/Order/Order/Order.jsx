@@ -37,15 +37,17 @@ const Order = () => {
 			</Helmet>
 			<Cover img={orderCover} title={'Order Food'}></Cover>
 			<Tabs defaultIndex={tabIndex} onSelect={(index) => setTabIndex(index)}>
-				<TabList>
+				<div className='flex items-center justify-center my-8' >
+				<TabList >
 					<Tab>Salad</Tab>
 					<Tab>Pizza</Tab>
 					<Tab>Soup</Tab>
 					<Tab>Dessert</Tab>
 					<Tab>Drinks</Tab>
 				</TabList>
+				</div>
 				<TabPanel>
-				    <OrderTab items={salad}></OrderTab>
+				    <OrderTab  items={salad}></OrderTab>
 				</TabPanel>
 				<TabPanel>
 				    <OrderTab items={pizza}></OrderTab>
