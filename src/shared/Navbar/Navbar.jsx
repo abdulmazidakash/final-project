@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { AuthContext } from '../../providers/AuthProvider';
+import { FaShoppingCart } from 'react-icons/fa';
 
 const Navbar = () => {
 
@@ -16,17 +17,26 @@ const Navbar = () => {
 				console.log(err.message);
 			})
 	}
-	const navOptions = <>
+	const navOptions = 
+		<>
 					<li><Link to='/'>Home</Link></li>
 
 					<li><Link to='/menu'>Our Menu</Link></li>
 					<li><Link to='/order'>Order Food</Link></li>
 					<li><Link to='/secret'>Secret</Link></li>
+					<li>
+						<Link to='/'>
+						<button className="btn btn-sm">
+							<FaShoppingCart></FaShoppingCart>
+							<div className="badge badge-secondary">+0</div>
+						</button>
+					    </Link>
+					</li>
 
 		
 					{
 						user? <>
-						<span>{user?.displayName}</span>
+						{/* <span>{user?.displayName}</span> */}
 						<button onClick={handleLogOUtUser} className='btn btn-sm btn-info'>Logout</button>
 						</> : <>
 						<li><Link to='/login'>Login</Link></li>
@@ -34,6 +44,7 @@ const Navbar = () => {
 					}
 					
 					</>
+
 	return (
 		<div>
 			<div className="navbar bg-opacity-30 fixed z-10 bg-black text-white max-w-screen-xl top-0 font-semibold h-10">
@@ -55,14 +66,14 @@ const Navbar = () => {
 					</div>
 					<ul
 						tabIndex={0}
-						className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow">
+						className="menu text-black menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow">
 					{navOptions}
 					</ul>
 					</div>
 					<a className="btn btn-ghost text-xl">Bistro Boss</a>
 				</div>
-				<div className="navbar-center hidden lg:flex">
-					<ul className="menu menu-horizontal px-1">
+				<div className="navbar-center hidden lg:flex justify-center items-center">
+					<ul className="menu menu-horizontal px-1 items-center">
 					{navOptions}
 					</ul>
 				</div>
