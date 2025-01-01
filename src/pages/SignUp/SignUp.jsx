@@ -2,17 +2,15 @@ import React, { useContext } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useForm } from 'react-hook-form';
 import { AuthContext } from '../../providers/AuthProvider';
+import { Link, useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
 
 const SignUp = () => {
 
-	const {createUser} = useContext(AuthContext);
+	const {createUser, updateUserProfile} = useContext(AuthContext);
+	const navigate = useNavigate();
 
-	const {
-		register,
-		handleSubmit,
-		watch,
-		formState: { errors },
-	  } = useForm();
+	const {register,handleSubmit,	reset ,formState: { errors },  } = useForm();
 
 	  const onSubmit = (data) =>{
 		console.log(data);
@@ -20,11 +18,23 @@ const SignUp = () => {
 			.then(result => {
 			const loggedUser = result.user;
 			console.log(loggedUser);
+			updateUserProfile(data.name, data.photoURL)
+			.then(()=>{
+					console.log('user created successfully');
+					reset();
+					Swal.fire({
+						icon: 'success',
+						title: 'user created successfully',
+						showConfirmButton: false,
+						timer: 1500,
+					})
+					navigate('/')
 			})
+		})
+		.catch(error => console.log(error))
 
 	  }
 
-	  console.log(watch("example"))
 	return (
 		<div>
 			<Helmet>
@@ -47,6 +57,13 @@ const SignUp = () => {
 									</label>
 									<input type="text" {...register("name", { required: true })} name='name' placeholder="name" className="input input-bordered"  />
 									{errors.name && <span className='text-red-700'>Name is required</span>}
+									</div>
+									<div className="form-control">
+									<label className="label">
+										<span className="label-text">Photo</span>
+									</label>
+									<input type="text" {...register("photo", { required: true })}  placeholder="photo" className="input input-bordered"  />
+									{errors.photo && <span className='text-red-700'>Photo is required</span>}
 									</div>
 									<div className="form-control">
 									<label className="label">
@@ -80,6 +97,7 @@ const SignUp = () => {
 									<input type="submit"  className="btn btn-primary" name="Login" placeholder='Login' value='Sign Up' id="" />
 									</div>
 								</form>
+								<p className='text-center p-2'>Already <Link className='text-red-700' to='/login'>Login</Link></p>
 								</div>
 							</div>
 						</div>
