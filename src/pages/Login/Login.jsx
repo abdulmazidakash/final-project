@@ -1,9 +1,5 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
-import { 
-    loadCaptchaEnginge, 
-    LoadCanvasTemplate, 
-    validateCaptcha 
-} from 'react-simple-captcha';
+import {  loadCaptchaEnginge,  LoadCanvasTemplate,  validateCaptcha } from 'react-simple-captcha';
 import { AuthContext } from '../../providers/AuthProvider';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
@@ -14,7 +10,9 @@ const Login = () => {
     const [disabled, setDisabled] = useState(true);
 	const location = useLocation();
 	const navigate = useNavigate();
-	const from = location?.state || '/';
+	const from = location?.state?.from?.pathname || '/';
+
+    console.log('state in the location login page', location.state);
 
     useEffect(() => {
         loadCaptchaEnginge(6); // Load a captcha of 6 characters
@@ -59,7 +57,7 @@ const Login = () => {
             setDisabled(false);
             Swal.fire("Captcha validated successfully!", "", "success");
         } else {
-            setDisabled(true);
+            setDisabled(false);
             Swal.fire("Captcha validation failed. Please try again.", "", "error");
         }
     };
@@ -98,7 +96,8 @@ const Login = () => {
                                 </label>
                             </div>
 
-                            {/* Captcha */}
+
+                            {/*todo: apply disable for re Captcha */}
                             <div className="form-control">
                                 <label className="label">
                                     <LoadCanvasTemplate />
@@ -109,14 +108,15 @@ const Login = () => {
                                  
                                     placeholder="Type the text above"
                                     className="input input-bordered"
-                                    required
+                            
                                 />
                         
                             </div>
                             <div className="form-control mt-6">
+                                {/* todo: apply disabled for re captcha  */}
                                 <input
                                     type="submit"
-                                    disabled={disabled}
+                                    disabled={false}
                                     className={`btn btn-primary ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
                                     value="Login"
                                 />
