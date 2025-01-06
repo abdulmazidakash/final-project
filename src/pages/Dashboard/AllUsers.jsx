@@ -1,21 +1,64 @@
 import React from 'react';
 import useAxiosSecure from '../../hooks/useAxiosSecure';
 import { useQuery } from '@tanstack/react-query';
-import { FaTrashAlt, FaUser } from 'react-icons/fa';
+import { FaTrashAlt, FaUser, FaUsers } from 'react-icons/fa';
+import Swal from 'sweetalert2';
 
 const AllUsers = () => {
 
 	const axiosSecure = useAxiosSecure();
-	const {data: users = []} = useQuery({
+	const {data: users = [], refetch} = useQuery({
 		queryKey: ['users'],
 		queryFn: async() =>{
 			const res = await axiosSecure.get('/users');
 			return res.data;
 		}
-	})
+	});
+
+	const handleMakeAdmin = user =>{
+		axiosSecure.patch(`/users/admin/${user._id}`)
+			.then(res =>{
+				console.log(res.data);
+				if(res.data.modifiedCount > 0){
+					refetch();
+					Swal.fire({
+						title: `${user.name} is an admin now`,
+						icon: "success",
+						showConfirmButton: false,
+						timer: 1500,
+					  });
+				}
+			})
+	}
 
 	const handleDeleteUser = user =>{
+		Swal.fire({
+			title: "Are you sure?",
+			text: "You won't be able to revert this!",
+			icon: "warning",
+			showCancelButton: true,
+			confirmButtonColor: "#3085d6",
+			cancelButtonColor: "#d33",
+			confirmButtonText: "Yes, delete it!"
+		  }).then((result) => {
+			if (result.isConfirmed) {
+		
 
+			axiosSecure.delete(`/users/${user._id}`)
+				.then(res =>{
+					console.log(res.data);
+					if(res.data.deletedCount > 0){
+						refetch()
+					  Swal.fire({
+								title: "Deleted!",
+								text: `has been deleted`,
+								icon: "success"
+							  });
+					}
+				})
+
+			}
+		  });
 	}
 	return (
 		<div>
@@ -43,10 +86,12 @@ const AllUsers = () => {
 							<td>{user.name}</td>
 							<td>{user.email}</td>
 							<td>
-								<button onClick={()=> handleDeleteUser(user._id)} className="btn  btn-sm text-error bg-orange-500 "><FaUser className='text-white text-2xl'/> </button>
+								{
+									user.role === 'admin' ? 'Admin' : <button onClick={()=> handleMakeAdmin(user)} className="btn  btn-sm text-error bg-orange-500 "><FaUsers className='text-white text-2xl'/> </button>
+								}
 							</td>
 							<td>
-								<button onClick={()=> handleDeleteUser(user._id)} className="btn  btn-sm "><FaTrashAlt/> </button>
+								<button onClick={()=> handleDeleteUser(user)} className="btn  btn-sm "><FaTrashAlt/> </button>
 							</td>
 						</tr>)
 					}
